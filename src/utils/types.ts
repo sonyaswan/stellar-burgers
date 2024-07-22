@@ -38,3 +38,18 @@ export type TUser = {
 };
 
 export type TTabMode = 'bun' | 'sauce' | 'main';
+
+export const enum appPath {
+  main = '/',
+  feed = '/feed',
+  feedNumber = '/feed/:number',
+  login = '/login',
+  register = '/register',
+  forgot = '/forgot-password',
+  reset = '/reset-password',
+  profile = '/profile',
+  orders = '/profile/orders',
+  ordersNumber = '/profile/orders/:number',
+  ingredientId = '/ingredients/:id',
+  notFound = '*'
+}
