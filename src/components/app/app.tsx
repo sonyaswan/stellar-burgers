@@ -37,7 +37,6 @@ import { useDispatch } from '../../services/store';
 
 import { fetchIngredient } from '../../services/slices/ingridientSlice';
 import { fetchUser } from '../../services/slices/userSlice';
-import { clearOrder } from '../../services/slices/orderSlice';
 
 import { appPath } from '@utils-types';
 
@@ -50,16 +49,15 @@ const App = () => {
   const location = useLocation();
   const backgroundLocation = location.state && location.state.background;
 
-  const closeModal = (modalType: 'order' | 'ingridient') => {
+  const closeModal = () => {
     navigate(-1);
-    if (modalType === 'order') {
-      dispatch(clearOrder());
-    }
   };
 
   useEffect(() => {
     dispatch(fetchIngredient());
-    dispatch(fetchUser());
+    if (localStorage.getItem('refreshToken')) {
+      dispatch(fetchUser());
+    }
   }, [dispatch]);
 
   return (
@@ -118,16 +116,24 @@ const App = () => {
             }
           />
           <Route path={appPath.notFound} element={<NotFound404 />} />
+
+          <Route path={appPath.feedNumber} element={<OrderInfo />} />
+          <Route path={appPath.ingredientId} element={<IngredientDetails />} />
+          <Route
+            path={appPath.ordersNumber}
+            element={
+              <ProtectedRoute>
+                <OrderInfo />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
         {backgroundLocation && (
           <Routes>
             <Route
               path={appPath.feedNumber}
               element={
-                <Modal
-                  title='Информация о заказе'
-                  onClose={() => closeModal('order')}
-                >
+                <Modal title='Информация о заказе' onClose={closeModal}>
                   <OrderInfo />
                 </Modal>
               }
@@ -135,10 +141,7 @@ const App = () => {
             <Route
               path={appPath.ingredientId}
               element={
-                <Modal
-                  title='Детали ингредиента'
-                  onClose={() => closeModal('ingridient')}
-                >
+                <Modal title='Детали ингредиента' onClose={closeModal}>
                   <IngredientDetails />
                 </Modal>
               }
@@ -147,10 +150,7 @@ const App = () => {
               path={appPath.ordersNumber}
               element={
                 <ProtectedRoute>
-                  <Modal
-                    title='Информация о заказе'
-                    onClose={() => closeModal('order')}
-                  >
+                  <Modal title='Информация о заказе' onClose={closeModal}>
                     <OrderInfo />
                   </Modal>
                 </ProtectedRoute>

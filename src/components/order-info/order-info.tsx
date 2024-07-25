@@ -11,7 +11,8 @@ import { useSelector, useDispatch } from '../../services/store';
 import { getIngredients } from '../../services/slices/ingridientSlice';
 import {
   fetchOrderByNumber,
-  getOrderData
+  getOrderData,
+  clearOrder
 } from '../../services/slices/orderSlice';
 
 export const OrderInfo: FC = () => {
@@ -22,6 +23,7 @@ export const OrderInfo: FC = () => {
 
   useEffect(() => {
     dispatch(fetchOrderByNumber(orderNumber));
+    dispatch(clearOrder());
   }, []);
 
   const orderData = useSelector(getOrderData);

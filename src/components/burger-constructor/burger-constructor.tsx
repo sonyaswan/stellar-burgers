@@ -1,6 +1,6 @@
 //отображение выбранных элементов в бургере, итоговой суммы и кнопка заказа
 
-import { FC, useMemo } from 'react';
+import { FC, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { TConstructorIngredient } from '@utils-types';
@@ -34,6 +34,10 @@ export const BurgerConstructor: FC = () => {
   const orderModalData = useSelector(getOrderData);
 
   const authUser = useSelector(getIsAuth);
+
+  useEffect(() => {
+    dispatch(clearOrder());
+  }, []);
 
   const onOrderClick = () => {
     if (!constructorItems.bun || orderRequest) return;
