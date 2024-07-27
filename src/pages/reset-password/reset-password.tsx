@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { resetPasswordApi } from '@api';
 import { ResetPasswordUI } from '@ui-pages';
 
+import { appPath } from '@utils-types';
+
 export const ResetPassword: FC = () => {
   const navigate = useNavigate();
   const [password, setPassword] = useState('');
@@ -23,7 +25,7 @@ export const ResetPassword: FC = () => {
 
   useEffect(() => {
     if (!localStorage.getItem('resetPassword')) {
-      navigate('/forgot-password', { replace: true });
+      navigate(appPath.reset, { replace: true });
     }
   }, [navigate]);
 
