@@ -87,12 +87,25 @@ describe('Интеграционные тесты на Cypress для стран
             cy.contains('#modals', ONE_INGREDIENT.name).should('exist');
         });
 
-        it('2/2. закрытие по клику на крестик', () => {
+        it('2/2. отображение в открытом модальном окне данных именно того ингредиента, по которому произошел клик', () => {
+            const dataKey = {
+                proteins: "Белки, г",
+                fat: "Жиры, г",
+                carbohydrates: "Углеводы, г",
+                calories: "Калории, ккал",
+            };
+
+            Object.keys(dataKey).forEach((key) => {
+                cy.get('#modals' ).contains(dataKey[key]).next().contains(ONE_INGREDIENT[key]).should('exist')
+            });
+        });
+
+        it('2/3. закрытие по клику на крестик', () => {
             cy.get('#modals button').click();
             cy.contains('#modals', ONE_INGREDIENT.name).should('not.exist');
         });
 
-        it('2/3. закрытие по клику на оверлей', () => {
+        it('2/4. закрытие по клику на оверлей', () => {
             cy.get(`[data-cy = 'overlay']`).click({ force: true }); //element is being covered by another element. Fix this problem, or use {force: true} to disable error checking.
             cy.contains('#modals', ONE_INGREDIENT.name).should('not.exist');
         });

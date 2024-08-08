@@ -1,7 +1,7 @@
 import { rootReducer, store } from '../store';
 
 describe('1. Проверяем правильную инициализацию rootReducer', () => {
-  const storeRes = rootReducer(undefined, { type: 'ACTION' });
+  const storeRes = rootReducer(undefined, { type: 'UNKNOWN_ACTION' });
   const storeState = store.getState();
 
   it('1/1. состояние хранилища', () => {
