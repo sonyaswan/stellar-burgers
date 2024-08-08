@@ -1,11 +1,4 @@
-import { feed, fetchFeeds } from '../slices/feedSlice';
-
-export const initialState = {
-  orders: [],
-  total: 0,
-  totalToday: 0,
-  isLoading: false
-};
+import { feed, fetchFeeds, initialState } from '../slices/feedSlice';
 
 export const ordersData = {
   orders: ['1', '2', '3', '4', '5'],

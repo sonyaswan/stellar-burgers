@@ -4,17 +4,16 @@ import {
   fetchUpdateUser,
   fetchRegistration,
   fetchLogin,
-  fetchLogout
+  fetchLogout,
+  initialState as initialStateNull
 } from '../slices/userSlice';
 
 const userDataNull = { name: '', email: '' };
 const userData = { name: 'test name', email: 'test@test.test' };
 
-const initialState = [
+const initialStates = [
   {
-    isAuth: false,
-    userData: userDataNull,
-    isLoading: false
+    ...initialStateNull
   },
   {
     isAuth: false,
@@ -32,21 +31,21 @@ describe('4. редьюсеры userSlice extraReducers', () => {
   //
   describe('4/1. fetchUser', () => {
     it('4/1/1. pending', () => {
-      const stateTest = user(initialState[0], fetchUser.pending(''));
+      const stateTest = user(initialStates[0], fetchUser.pending(''));
       expect(stateTest.isLoading).toBe(true);
     });
 
     it('4/1/2. rejected', () => {
       const errorTest = new Error('test error');
       const stateTest = user(
-        initialState[1],
+        initialStates[1],
         fetchUser.rejected(errorTest, '')
       );
       expect(stateTest.isLoading).toBe(false);
     });
 
     it('4/1/3. fulfilled', () => {
-      const stateTest = user(initialState[0], {
+      const stateTest = user(initialStates[0], {
         type: fetchUser.fulfilled.type,
         payload: { user: userData }
       });
@@ -57,21 +56,21 @@ describe('4. редьюсеры userSlice extraReducers', () => {
   //
   describe('4/2. fetchUpdateUser', () => {
     it('4/2/1. pending', () => {
-      const stateTest = user(initialState[0], {
+      const stateTest = user(initialStates[0], {
         type: fetchUpdateUser.pending.type
       });
       expect(stateTest.isLoading).toBe(true);
     });
 
     it('4/2/2. rejected', () => {
-      const stateTest = user(initialState[1], {
+      const stateTest = user(initialStates[1], {
         type: fetchUpdateUser.rejected.type
       });
       expect(stateTest.isLoading).toBe(false);
     });
 
     it('4/2/3. fulfilled', () => {
-      const stateTest = user(initialState[2], {
+      const stateTest = user(initialStates[2], {
         type: fetchUpdateUser.fulfilled.type,
         payload: { user: userData }
       });
@@ -82,7 +81,7 @@ describe('4. редьюсеры userSlice extraReducers', () => {
   //
   describe('4/3. fetchRegistration', () => {
     it('4/3/1. pending', () => {
-      const stateTest = user(initialState[0], {
+      const stateTest = user(initialStates[0], {
         type: fetchRegistration.pending.type
       });
       expect(stateTest.isLoading).toBe(true);
@@ -90,7 +89,7 @@ describe('4. редьюсеры userSlice extraReducers', () => {
     });
 
     it('4/3/2. rejected', () => {
-      const stateTest = user(initialState[1], {
+      const stateTest = user(initialStates[1], {
         type: fetchRegistration.rejected.type
       });
       expect(stateTest.isLoading).toBe(false);
@@ -98,7 +97,7 @@ describe('4. редьюсеры userSlice extraReducers', () => {
     });
 
     it('4/3/3. fulfilled', () => {
-      const stateTest = user(initialState[0], {
+      const stateTest = user(initialStates[0], {
         type: fetchRegistration.fulfilled.type,
         payload: { user: userData }
       });
@@ -110,7 +109,7 @@ describe('4. редьюсеры userSlice extraReducers', () => {
   //
   describe('4/4. fetchLogin', () => {
     it('4/4/1. pending', () => {
-      const stateTest = user(initialState[0], {
+      const stateTest = user(initialStates[0], {
         type: fetchLogin.pending.type
       });
       expect(stateTest.isLoading).toBe(true);
@@ -118,7 +117,7 @@ describe('4. редьюсеры userSlice extraReducers', () => {
     });
 
     it('4/4/2. rejected', () => {
-      const stateTest = user(initialState[1], {
+      const stateTest = user(initialStates[1], {
         type: fetchLogin.rejected.type
       });
       expect(stateTest.isLoading).toBe(false);
@@ -126,7 +125,7 @@ describe('4. редьюсеры userSlice extraReducers', () => {
     });
 
     it('4/4/3. fulfilled', () => {
-      const stateTest = user(initialState[0], {
+      const stateTest = user(initialStates[0], {
         type: fetchLogin.fulfilled.type,
         payload: { user: userData }
       });
@@ -138,7 +137,7 @@ describe('4. редьюсеры userSlice extraReducers', () => {
   //
   describe('4/5. fetchLogout', () => {
     it('4/5/1. pending', () => {
-      const stateTest = user(initialState[0], {
+      const stateTest = user(initialStates[0], {
         type: fetchLogout.pending.type
       });
       expect(stateTest.isLoading).toBe(true);
@@ -146,7 +145,7 @@ describe('4. редьюсеры userSlice extraReducers', () => {
     });
 
     it('4/5/2. rejected', () => {
-      const stateTest = user(initialState[1], {
+      const stateTest = user(initialStates[1], {
         type: fetchLogout.rejected.type
       });
       expect(stateTest.isLoading).toBe(false);
@@ -154,7 +153,7 @@ describe('4. редьюсеры userSlice extraReducers', () => {
     });
 
     it('4/5/3. fulfilled', () => {
-      const stateTest = user(initialState[2], {
+      const stateTest = user(initialStates[2], {
         type: fetchLogout.fulfilled.type
       });
       expect(stateTest.isLoading).toBe(false);

@@ -3,7 +3,8 @@ import {
   clearOrder,
   fetchOrders,
   fetchOrderByNumber,
-  createOrder
+  createOrder,
+  initialState as initialStateNull
 } from '../slices/orderSlice';
 
 const oneOrderMock = {
@@ -22,19 +23,13 @@ const ordersMock = [
   { ...oneOrderMock, number: 3 }
 ];
 
-export const initialStateNull = {
-  isLoading: false,
-  orders: [],
-  oneOrder: null
-};
-
 export const initialStateNotNull = {
   isLoading: false,
   orders: ordersMock,
   oneOrder: oneOrderMock
 };
 
-describe('6. редьюсеры fetchFeeds extraReducers', () => {
+describe('6. редьюсеры orderSlice', () => {
   it('6/1 clearOrder', () => {
     const stateTest = order(initialStateNotNull, clearOrder());
     expect(stateTest.oneOrder).toBe(null);

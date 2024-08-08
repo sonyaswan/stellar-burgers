@@ -1,6 +1,6 @@
 import Cypress from 'cypress';
 
-const TEST_URL = 'http://localhost:4000';
+const TEST_URL = '/';
 
 const BUN = { _id: "643d69a5c3f7b9001cfa093c", name: "Краторная булка N-200i" };
 
@@ -47,10 +47,18 @@ const clickSomeIngredients = () => {
     })
 };
 
+const findModal = () => {
+    cy.get('#modals').as('modals');
+};
+
+const findConstructor = () => {
+    cy.get(`[data-cy='burger_constructor']`).as('burger_constructor');
+};
+
 describe('Интеграционные тесты на Cypress для страницы конструктора бургера', function () {
     beforeEach(() => {
         cy.intercept('GET', 'api/ingredients', { fixture: 'ingredients.json' }).as('getIngredients'); //Настроен перехват запроса на эндпоинт 'api/ingredients’, в ответе на который возвращаются созданные ранее моковые данные.
-    })
+    });
 
     it(`0. сервис должен быть доступен по адресу ${TEST_URL}`, function () {
         cy.visit(TEST_URL);
@@ -60,7 +68,7 @@ describe('Интеграционные тесты на Cypress для стран
 
         beforeEach(() => {
             cy.visit(TEST_URL);
-        })
+        });
 
         it('1/1. добавление булок', () => {
             cy.get(`[data-cy = ${BUN._id}]`).children('button').click();
@@ -81,10 +89,11 @@ describe('Интеграционные тесты на Cypress для стран
         beforeEach(() => {
             cy.visit(TEST_URL);
             cy.get(`[data-cy = ${ONE_INGREDIENT._id}]`).click();
-        })
+            findModal();
+        });
 
         it('2/1. открытие модального окна ингредиента', () => {
-            cy.contains('#modals', ONE_INGREDIENT.name).should('exist');
+            cy.get('@modals').contains(ONE_INGREDIENT.name).should('exist');
         });
 
         it('2/2. отображение в открытом модальном окне данных именно того ингредиента, по которому произошел клик', () => {
@@ -96,18 +105,18 @@ describe('Интеграционные тесты на Cypress для стран
             };
 
             Object.keys(dataKey).forEach((key) => {
-                cy.get('#modals' ).contains(dataKey[key]).next().contains(ONE_INGREDIENT[key]).should('exist')
+                cy.get('@modals' ).contains(dataKey[key]).next().contains(ONE_INGREDIENT[key]).should('exist')
             });
         });
 
         it('2/3. закрытие по клику на крестик', () => {
-            cy.get('#modals button').click();
-            cy.contains('#modals', ONE_INGREDIENT.name).should('not.exist');
+            cy.get('@modals').find('button').click();
+            cy.get('@modals').contains(ONE_INGREDIENT.name).should('not.exist');
         });
 
         it('2/4. закрытие по клику на оверлей', () => {
             cy.get(`[data-cy = 'overlay']`).click({ force: true }); //element is being covered by another element. Fix this problem, or use {force: true} to disable error checking.
-            cy.contains('#modals', ONE_INGREDIENT.name).should('not.exist');
+            cy.get('@modals').contains(ONE_INGREDIENT.name).should('not.exist');
         });
 
     });
@@ -122,44 +131,48 @@ describe('Интеграционные тесты на Cypress для стран
             window.localStorage.setItem('refreshToken', 'test-refreshToken');
 
             cy.visit(TEST_URL);
-
+            findConstructor();
             clickSomeIngredients();
-        })
+            
+        });
 
         afterEach(() => {
             cy.clearCookie('accessToken');
             cy.clearLocalStorage('refreshToken');
-        })
+        });
 
-        it('3/1. Собирается бургер - выбранные ингридиенты отображаются в бургере', () => {
-            cy.contains(`[data-cy='burger_constructor']`, BUN.name + " (верх)").should('exist');
-            cy.contains(`[data-cy='burger_constructor']`, BUN.name + " (низ)").should('exist');
+        it('3/1. Собирается бургер - выбранные ингредиенты отображаются в бургере', () => {
+            cy.get('@burger_constructor').contains(BUN.name + " (верх)").should('exist');
+            cy.get('@burger_constructor').contains(BUN.name + " (низ)").should('exist');
             INGREDIENTS.forEach(({ name }) => {
-                cy.contains(`[data-cy='burger_constructor']`, name).should('exist');
+                cy.get('@burger_constructor').contains(name).should('exist');
             })
-            cy.contains(`[data-cy='burger_constructor']`, ORDER.price).should('exist');
+            cy.get('@burger_constructor').contains(ORDER.price).should('exist');
         });
 
         it(`3/2. Вызывается клик по кнопке «${ORDER_BUTTON_TEXT}»`, () => {
-            cy.get(`[data-cy="burger_constructor"] button:contains(${ORDER_BUTTON_TEXT})`).click();
+            cy.get('@burger_constructor').find(`button:contains(${ORDER_BUTTON_TEXT})`).click();
         });
 
         it(`3/3. Проверяется, что модальное окно открылось и номер заказа верный (${ORDER.number})`, () => {
-            cy.get(`[data-cy="burger_constructor"] button:contains(${ORDER_BUTTON_TEXT})`).click();
-            cy.contains('#modals', ORDER.number).should('exist');
+            cy.get('@burger_constructor').find(`button:contains(${ORDER_BUTTON_TEXT})`).click();
+            findModal();
+            cy.get('@modals').contains(ORDER.number).should('exist');
         });
 
         it('3/4. Закрывается модальное окно и проверяется успешность закрытия', () => {
-            cy.get(`[data-cy="burger_constructor"] button:contains(${ORDER_BUTTON_TEXT})`).click();
-            cy.get('#modals button').click();
-            cy.contains('#modals', ORDER.number).should('not.exist');
+            cy.get('@burger_constructor').find(`button:contains(${ORDER_BUTTON_TEXT})`).click();
+            findModal();
+            cy.get('@modals').find('button').click();
+            cy.get('@modals').contains(ORDER.number).should('not.exist');
         });
 
         it('3/5. Проверяется, что конструктор пуст', () => {
-            cy.get(`[data-cy="burger_constructor"] button:contains(${ORDER_BUTTON_TEXT})`).click();
-            cy.get('#modals button').click();
-            cy.contains(`[data-cy='burger_constructor']`, 'Выберите булки').should('exist');
-            cy.contains(`[data-cy='burger_constructor']`, 'Выберите начинку').should('exist');
+            cy.get('@burger_constructor').find(`button:contains(${ORDER_BUTTON_TEXT})`).click();
+            findModal();
+            cy.get('@modals').find('button').click();
+            cy.get('@burger_constructor').contains('Выберите булки').should('exist');
+            cy.get('@burger_constructor').contains('Выберите начинку').should('exist');
         });
         
     });
