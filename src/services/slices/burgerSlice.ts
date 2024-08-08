@@ -28,10 +28,6 @@ const BurgerSlice = createSlice({
   initialState,
 
   reducers: {
-    addBun: (state, action: PayloadAction<TConstructorIngredient>) => {
-      state.bun = action.payload;
-    },
-
     addIngredient: {
       reducer: (state, { payload }: PayloadAction<TConstructorIngredient>) => {
         if (payload.type === 'bun') {
@@ -61,6 +57,14 @@ const BurgerSlice = createSlice({
     },
 
     moveIngredient: (state, { payload }: PayloadAction<TIngredientMove>) => {
+      if (payload.direction === 'up' && payload.index === 0) return;
+
+      if (
+        payload.direction === 'down' &&
+        payload.index === state.ingredients.length - 1
+      )
+        return;
+
       const directionNumber = payload.direction === 'up' ? 1 : -1;
       const elementToMOve = state.ingredients[payload.index];
       const elementNeighbour =
@@ -76,7 +80,6 @@ const BurgerSlice = createSlice({
 });
 
 export const {
-  addBun,
   addIngredient,
   removeOneIngredient,
   removeAllIngredients,
