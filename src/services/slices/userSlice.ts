@@ -17,15 +17,18 @@ import {
 import { setCookie, deleteCookie } from '../../utils/cookie';
 
 import { TUser } from '@utils-types';
+import { getIsLoading } from './ingridientSlice';
 
 export interface IUser {
   isAuth: boolean;
   userData: TUser;
+  isLoading: Boolean;
 }
 
 export const initialState: IUser = {
   isAuth: false,
-  userData: { name: '', email: '' }
+  userData: { name: '', email: '' },
+  isLoading: false
 };
 
 export const fetchUser = createAsyncThunk('user/getUser', getUserApi);
@@ -71,53 +74,70 @@ const UserSlice = createSlice({
 
   extraReducers: (builder) => {
     builder.addCase(fetchUser.pending, (state) => {
-      state.isAuth = false;
+      state.isLoading = true;
     }),
       builder.addCase(fetchUser.rejected, (state) => {
-        state.isAuth = false;
+        state.isLoading = false;
       }),
       builder.addCase(fetchUser.fulfilled, (state, action) => {
         state.isAuth = true;
+        state.isLoading = false;
         state.userData = action.payload.user;
       });
 
-    builder.addCase(fetchUpdateUser.fulfilled, (state, action) => {
-      state.isAuth = true;
-      state.userData = action.payload.user;
-    });
+    builder.addCase(fetchUpdateUser.pending, (state) => {
+      state.isLoading = true;
+    }),
+      builder.addCase(fetchUpdateUser.rejected, (state) => {
+        state.isLoading = false;
+      }),
+      builder.addCase(fetchUpdateUser.fulfilled, (state, action) => {
+        state.isAuth = true;
+        state.isLoading = false;
+        state.userData = action.payload.user;
+      });
 
     builder.addCase(fetchRegistration.pending, (state) => {
       state.isAuth = false;
+      state.isLoading = true;
     }),
       builder.addCase(fetchRegistration.rejected, (state) => {
         state.isAuth = false;
+        state.isLoading = false;
       }),
       builder.addCase(fetchRegistration.fulfilled, (state, action) => {
         state.isAuth = true;
+        state.isLoading = false;
         state.userData = action.payload.user;
       });
 
     builder.addCase(fetchLogin.pending, (state) => {
       state.isAuth = false;
+      state.isLoading = true;
     }),
       builder.addCase(fetchLogin.rejected, (state) => {
         state.isAuth = false;
+        state.isLoading = false;
       }),
       builder.addCase(fetchLogin.fulfilled, (state, action) => {
         state.isAuth = true;
+        state.isLoading = false;
         state.userData = action.payload.user;
       });
 
     builder.addCase(fetchLogout.pending, (state) => {
       state.isAuth = false;
+      state.isLoading = true;
       state.userData = { name: '', email: '' };
     }),
       builder.addCase(fetchLogout.rejected, (state) => {
         state.isAuth = false;
+        state.isLoading = false;
         state.userData = { name: '', email: '' };
       }),
       builder.addCase(fetchLogout.fulfilled, (state) => {
         state.isAuth = false;
+        state.isLoading = false;
         state.userData = { name: '', email: '' };
       });
   }

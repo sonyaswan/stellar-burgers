@@ -12,14 +12,14 @@ import { TOrder } from '@utils-types';
 export interface IFeed {
   orders: TOrder[];
   total: number;
-  todayTotal: number;
+  totalToday: number;
   isLoading: boolean;
 }
 
 export const initialState: IFeed = {
   orders: [],
   total: 0,
-  todayTotal: 0,
+  totalToday: 0,
   isLoading: false
 };
 
@@ -38,7 +38,7 @@ const FeedSlice = createSlice({
   selectors: {
     getFeed: (state) => state.orders,
     getTotal: (state) => state.total,
-    getTodayTotal: (state) => state.todayTotal,
+    getTodayTotal: (state) => state.totalToday,
     getLoading: (state) => state.isLoading
   },
 
@@ -53,7 +53,7 @@ const FeedSlice = createSlice({
         state.isLoading = false;
         state.orders = action.payload.orders;
         state.total = action.payload.total;
-        state.todayTotal = action.payload.totalToday;
+        state.totalToday = action.payload.totalToday;
       });
   }
 });
